@@ -26,8 +26,8 @@ class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Get()
-  // @Roles('admin')
-  // @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles('admin')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   async getCurrentUser(): Promise<any> {
     const data = await this.authService.getCurrentUser();
     return ApiResponse.build({ data });
