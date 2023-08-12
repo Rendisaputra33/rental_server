@@ -1,0 +1,112 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-1.0.x"]
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Account {
+  id           Int           @id @default(autoincrement())
+  email        String        @unique
+  full_name    String
+  password     String
+  address      String?
+  token        String?
+  role         RoleAccount   @default(customer)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime?     @updatedAt
+  transactions Transaction[]
+}
+
+model Bike {
+  id          Int           @id @default(autoincrement())
+  code        String        @unique
+  name        String
+  available   Boolean       @default(true)
+  image       String        @db.Text
+  transaction Transaction[]
+}
+
+model Package {
+  id               Int           @id @default(autoincrement())
+  code             String        @unique
+  name             String        @db.Text
+  description      String        @db.Text
+  price            Decimal       @db.Decimal(65, 2)
+  lat_start        Decimal
+  lngt_start       Decimal
+  lat_destination  Decimal
+  lngt_destination Decimal
+  Transaction      Transaction[]
+  points           Point[]
+}
+
+model Payment {
+  id             Int           @id @default(autoincrement())
+  payment_method PaymentMethod @default(CASH)
+  transaction_id Int           @unique
+  transaction    Transaction   @relation(fields: [transaction_id], references: [id])
+  payment_bill   String?       @db.Text
+  is_paid        Boolean       @default(false)
+  created_at     DateTime      @default(now()) @db.Timestamp(0)
+  updated_at     DateTime      @updatedAt @db.Timestamp(0)
+}
+
+model Transaction {
+  id         Int               @id @default(autoincrement())
+  code       String            @unique
+  account_id Int
+  customer   Account           @relation(fields: [account_id], references: [id])
+  bike_id    Int
+  bike       Bike              @relation(fields: [bike_id], references: [id])
+  package_id Int
+  package    Package           @relation(fields: [package_id], references: [id])
+  ammount    Decimal           @default(0) @db.Decimal(65, 2)
+  payment    Payment?
+  status     TransactionStatus @default(PENDING)
+  created_at DateTime          @default(now()) @db.Timestamp(0)
+  updated_at DateTime          @updatedAt @db.Timestamp(0)
+}
+
+model News {
+  id         Int       @id @default(autoincrement())
+  slug       String    @unique
+  title      String
+  body       String    @db.Text
+  thumbnail  String?   @db.Text
+  created_at DateTime  @default(now()) @db.Timestamp(0)
+  updated_at DateTime? @updatedAt @db.Timestamp(0)
+}
+
+model Point {
+  id         Int     @id @default(autoincrement())
+  package_id Int
+  title      String
+  latitude   Decimal
+  longitude  Decimal
+  package    Package @relation(fields: [package_id], references: [id])
+}
+
+enum PaymentMethod {
+  BANK_TRANSFER
+  CASH
+}
+
+enum RoleAccount {
+  admin
+  customer
+  jurnalis
+}
+
+enum TransactionStatus {
+  COMPLETED
+  APPROVED
+  REJECTED
+  PENDING
+}
