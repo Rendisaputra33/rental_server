@@ -16,7 +16,7 @@ class AuthService {
     private readonly prismaService: PrismaService,
     private readonly jwtService: JwtService,
     private readonly security: SecurityService,
-  ) {}
+  ) { }
 
   async getCurrentUser() {
     return await this.prismaService.account.findMany();
@@ -118,7 +118,6 @@ class AuthService {
 
     delete user.createdAt;
     delete user.password;
-    delete user.role;
     delete user.updatedAt;
     delete user.token;
 
