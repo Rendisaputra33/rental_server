@@ -45,6 +45,18 @@ export class PackageService {
   async findOne(id: string) {
     const decid = this.security.decryptId(id);
     return await this.dbService.package.findUnique({
+      select: {
+        id: true,
+        lat_destination: true,
+        lngt_destination: true,
+        lat_start: true,
+        lngt_start: true,
+        code: true,
+        description: true,
+        name: true,
+        price: true,
+        points: true,
+      },
       where: {
         id: decid,
       },
