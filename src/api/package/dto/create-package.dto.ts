@@ -30,4 +30,5 @@ export class CreatePackageDto {
     message: 'Lokasi awal tidak boleh kosong',
   })
   destination_loc: string[];
+  points: any[];
 }

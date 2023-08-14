@@ -9,7 +9,7 @@ export class PackageService {
   constructor(
     private readonly dbService: PrismaService,
     private readonly security: SecurityService,
-  ) {}
+  ) { }
 
   async create(dto: CreatePackageDto) {
     const [startLat, startLong] = dto.start_loc;
@@ -24,6 +24,16 @@ export class PackageService {
         lngt_start: startLong,
         lat_destination: destLat,
         lngt_destination: destLong,
+        points: {
+          createMany: {
+            data: [
+              ...dto.points.map<any>(
+                ({ latlang, title }) =>
+                  ({ title, latitude: latlang.lat, longitude: latlang.lng })
+              )
+            ],
+          },
+        },
       },
     });
   }
@@ -43,6 +53,7 @@ export class PackageService {
 
   async update(id: string, updatePackageDto: UpdatePackageDto) {
     const decId = this.security.decryptId(id);
+    await this.dbService.point.deleteMany({ where: { package_id: decId } });
     return await this.dbService.package.update({
       where: {
         id: decId,
@@ -55,6 +66,16 @@ export class PackageService {
         lat_destination: updatePackageDto.destination_loc[0],
         lngt_destination: updatePackageDto.destination_loc[1],
         lngt_start: updatePackageDto.start_loc[1],
+        points: {
+          createMany: {
+            data: [
+              ...updatePackageDto.points.map<any>(
+                ({ latlang, title }) =>
+                  ({ title, latitude: latlang.lat, longitude: latlang.lng })
+              )
+            ],
+          },
+        },
       },
     });
   }
