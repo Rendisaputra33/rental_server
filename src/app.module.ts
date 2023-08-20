@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
 import { AuthModule } from '@app/api/auth/auth.module';
 import { PrismaService } from '@app/prisma.service';
 import { BikeModule } from '@app/api/bike/bike.module';
@@ -12,6 +12,7 @@ import { CloudinaryModule } from './api/cloudinary/cloudinary.module';
 import { AppController } from './app.controller';
 import { NewsModule } from './api/news/news.module';
 
+@Global()
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -28,5 +29,6 @@ import { NewsModule } from './api/news/news.module';
   ],
   controllers: [AppController, AssetsController],
   providers: [PrismaService],
+  exports: [PrismaService],
 })
 export class AppModule {}

@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TransactionService } from '@app/api/transaction/transaction.service';
 import { TransactionController } from '@app/api/transaction/transaction.controller';
-import { PrismaService } from '@app/prisma.service';
 import { RolesGuard } from '@app/api/auth/auth.guard';
 import { SecurityService } from '../security/security.service';
 import { SocketService } from '@app/gateways/gateway.service';
@@ -22,7 +21,6 @@ import { CloudinaryModule } from '../cloudinary/cloudinary.module';
   controllers: [TransactionController],
   providers: [
     GatewayGateway,
-    PrismaService,
     SecurityService,
     SocketService,
     TransactionService,
