@@ -24,7 +24,7 @@ export class TransactionService {
     private readonly dbService: PrismaService,
     private readonly security: SecurityService,
     private readonly gate: GatewayGateway,
-  ) { }
+  ) {}
 
   async create({ customer, packages, bike, ...input }: CreateTransactionDto) {
     console.log({ bike, packages, customer });
@@ -171,7 +171,7 @@ export class TransactionService {
             name: true,
             price: true,
             points: true,
-          }
+          },
         },
         payment: true,
         bike: {
